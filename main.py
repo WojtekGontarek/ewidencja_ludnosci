@@ -1,7 +1,10 @@
 import sys
 from pyexpat.errors import messages
 
+from PyQt6.QtCore import QDate
 from PyQt6.QtWidgets import QDialog, QApplication, QMessageBox
+
+import osoby
 from layout import Ui_Dialog
 from osoba import Osoba
 from osoby import Osoby
@@ -15,8 +18,10 @@ class MyForm(QDialog):
 
         self.ui.zapiszButton.clicked.connect(self.zapisz)
         self.osoby = Osoby()
+        self.osoby.wczytaj("dane.txt")
         lista = ["(nowy)"]
-        lista.extend(self.osoby.osoby)
+        lista.extend([f'{o.imie}, {o.nazwisko}' for o in self.osoby.osoby])
+
         self.ui.comboBox.addItems(lista)
         self.show()
 
@@ -33,17 +38,21 @@ class MyForm(QDialog):
         try:
             self.osoby.osoby.append(Osoba(imie, nazwisko, dob, pesel, miejscowosc, ulica, kod, numer_domu))
             lista = ["(nowy)"]
-            lista.extend(self.osoby.osoby)
+            lista.extend([f'{o.imie}, {o.nazwisko}' for o in self.osoby.osoby])
+            self.ui.comboBox.clear()
+            self.ui.comboBox.addItems(lista)
+
             self.czysc_pola()
+
         except ValueError as e:
             message = QMessageBox()
-            message.setText(str(e))
+            message.setText(e.__str__())
             message.exec()
 
     def czysc_pola(self):
         self.ui.imie.clear()
         self.ui.nazwisko.clear()
-        self.ui.dob.clear()
+        self.ui.dob.setDate(QDate.currentDate())
         self.ui.pesel.clear()
         self.ui.miejscowosc.clear()
         self.ui.ulica.clear()
@@ -57,4 +66,6 @@ class MyForm(QDialog):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = MyForm()
-    sys.exit(app.exec())
+    app.exec()
+    ex.osoby.zapisz("dane.txt")
+    sys.exit()

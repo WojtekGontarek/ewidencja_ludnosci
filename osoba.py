@@ -9,7 +9,7 @@ class Adres:
         self.numer_domu = numer_domu
 
     def __str__(self) -> str:
-        return f"{self.ulica};{self.kod};{self.miejscowosc};{self.numer_domu}"
+        return f"{self.miejscowosc};{self.ulica};{self.kod};{self.numer_domu}"
 
 class Osoba:
     def __init__(self, imie:str, nazwisko:str, dob:date, pesel:str, miejscowosc:str, ulica:str, kod:str, numer_domu:str):
@@ -34,9 +34,6 @@ class Osoba:
     def waliduj_pesel(self, pesel):
         # TODO walidacja peselu: dlugosc, sklad, cyfra kontrolna, data urodzenia
         cyfra_stulecia = 0 if self.dob.year<=1999 else 20
-        print(int(pesel[4:6]))
-        print(str(int(self.dob.day)))
-        print(str(int(pesel[4:6])) != str(self.dob.day))
         if len(pesel) != 11 \
                 or not pesel.isnumeric()\
                 or pesel[:2] != str(self.dob.year)[2:4]\
