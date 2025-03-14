@@ -23,7 +23,24 @@ class MyForm(QDialog):
         lista.extend([f'{o.imie}, {o.nazwisko}' for o in self.osoby.osoby])
 
         self.ui.comboBox.addItems(lista)
+        self.ui.comboBox.currentIndexChanged.connect(self.wyswietl)
         self.show()
+
+
+    def wyswietl(self):
+        index = self.ui.comboBox.currentIndex() - 1
+        if index == -1:
+            self.czysc_pola()
+        else:
+            osoba = self.osoby.osoby[index]
+            self.ui.imie.setText(osoba.imie)
+            self.ui.nazwisko.setText(osoba.nazwisko)
+            self.ui.pesel.setText(osoba.pesel)
+            self.ui.kod.setText(osoba.adres.kod)
+            self.ui.miejscowosc.setText(osoba.adres.miejscowosc)
+            self.ui.ulica.setText(osoba.adres.ulica)
+            self.ui.numerDomu.setText(osoba.adres.numer_domu)
+            self.ui.dob.setDate(QDate(osoba.dob.year, osoba.dob.month, osoba.dob.day))
 
     def zapisz(self):
         imie = self.ui.imie.text()
@@ -37,6 +54,10 @@ class MyForm(QDialog):
 
         try:
             self.osoby.osoby.append(Osoba(imie, nazwisko, dob, pesel, miejscowosc, ulica, kod, numer_domu))
+
+            if self.ui.comboBox.currentIndex() > 0:
+                del self.osoby.osoby[self.ui.comboBox.currentIndex() - 1]
+
             lista = ["(nowy)"]
             lista.extend([f'{o.imie}, {o.nazwisko}' for o in self.osoby.osoby])
             self.ui.comboBox.clear()
@@ -52,7 +73,7 @@ class MyForm(QDialog):
     def czysc_pola(self):
         self.ui.imie.clear()
         self.ui.nazwisko.clear()
-        self.ui.dob.setDate(QDate.currentDate())
+        self.ui.dob.setDate(QDate(2000, 1, 1))
         self.ui.pesel.clear()
         self.ui.miejscowosc.clear()
         self.ui.ulica.clear()

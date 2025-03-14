@@ -20,6 +20,7 @@ class Osoba:
         self.waliduj_pesel(pesel)
         self.pesel = pesel
 
+
     def __str__(self) -> str:
         return f"{self.imie};{self.nazwisko};{self.dob};{self.pesel};{self.adres}"
 
